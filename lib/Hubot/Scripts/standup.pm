@@ -211,7 +211,50 @@ Hubot::Scripts::standup - Agile standup bot ala tender
 
     hubot standup? - show help for standup
 
-=head1 CONFIGURATION
+=head1 SETUP
+
+First, you tell hubot who is a member for a particular team for the standup, using the C<roles> commands with "(who) is a (team) member".
+
+Let's take "engineering" team for example.
+
+    miyagawa: hubot miyagawa is an engineering member
+    hubot: Ok, miyagawa is an engineering member
+    miyagawa: hubot john is an engineering member
+    hubot: Ok, john is an engineering member
+    miyagawa: hubot davidlee is an engineering member
+    hubot: Ok, davidlee is an engineering member
+
+You can create as many teams as you want.
+
+=head2 START THE STANDUP
+
+Hubot won't schedule the standup for you (yet), you have to start it by yourself when it's time.
+
+    miyagawa: hubot standup for engineering
+    hubot: Ok, let's start the standup: miyagawa, john, davidlee
+    hubot: john: your turn
+
+Hubot remembers who should participate the standup, and will tell whose turn is the next. Tell what you did yesterday, will do today, anything blocked. and say "next" (or "done") when you're done.
+
+    john: Done some pretty nice hack yesterday.
+    john: I will work on another cool stuff today.
+    john: I'm not blocked
+    john: hubot next
+    hubot: davidlee: your turn
+
+When the user is offline or away for a second, tell hubot to skip the user.
+
+    miyagawa: hubot skip davidlee
+    hubot: Will skip davidlee
+    hubot: miyagawa: your turn
+
+Once the last user is done, hubot will tell you how long the standup was.
+
+    miyagawa: I'm working on some nice stuff, and will continue doing so today.
+    miyagawa: hubot next
+    hubot: All done! Standup was 5 minutes and 24 seconds.
+
+=head2 CONFIGURATION
 
 =over
 
@@ -219,13 +262,47 @@ Hubot::Scripts::standup - Agile standup bot ala tender
 
 =back
 
+the bot will post the standup archive to Yammer. You need to set a valid Yammer OAuth2 token to C<HUBOT_STANDUP_YAMMER_TOKEN> environment variable.
+
+Here's how to get a valid Yammer OAuth2 token with the standard OAuth2 authorization flow.
+
+See L<Yammer documentation|https://developer.yammer.com/api/oauth2.html> for more details.
+
+=over
+
+=item * Register a new application on Yammer at `https://www.yammer.com/<DOMAIN>/client_applications/new`. Leave the callback URLs empty
+
+=item * Take notes of your `consumer_key` and `consumer_secret`
+
+=item * Make a new bot user on Yammer (optional). This is the user who will post archives as.
+
+=item * Sign in as the new bot user on Yammer if necessary
+
+=item * Go to `https://www.yammer.com/dialog/oauth?client_id=<consumer_key>`
+
+=item * There's an authorization dialog. Authorize the app
+
+=item * Look at the URL bar and there's a `code=<CODE>` query parameter in there, copy that.
+
+=item * `curl https://www.yammer.com/oauth2/access_token?code=<CODE>&client_id=<consumer_key>&client_secret=<consumer_secret>`
+
+=item * you'll get a big JSON that contains `access_token` -> `token`
+
+=back
+
+Now set the token to C<HUBOT_STANDUP_YAMMER_TOKEN> and Hubot will ask which group ID the log should be posted to. Use the group ID 0 to turn off the feature for a group.
+
+=head1 SEE ALSO
+
+L<https://github.com/miyagawa/hubot-standup>
+
 =head1 AUTHOR
 
 Hyungsuk Hong <hshong@perl.kr>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by <Your Name>.
+This software is copyright (c) 2012 by Hyungsuk Hong.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
