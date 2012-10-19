@@ -79,7 +79,7 @@ sub load {
         sub {
             my $msg = shift;
             my $standup = $robot->brain->{data}{standup};
-            return unless $standup->{$msg->message->user->{room}};
+            return unless ($standup && $standup->{$msg->message->user->{room}});
             push @{ $standup->{$msg->message->user->{room}}{log} ||= [] }, {
                 message => $msg->message,
                 time    => DateTime->now->epoch,
