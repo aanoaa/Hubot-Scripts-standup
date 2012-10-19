@@ -9,4 +9,4 @@ https://github.com/miyagawa/hubot-standup#how-to-use
 
 ## Installation ##
 
-    $ cpanm Hubot::Scripts::standup    # not yet working
+    $ cpanm Hubot::Scripts::standup
